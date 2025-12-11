@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title>
+            ChatBot
+        </title>
+
+        <link rel="stylesheet" href = "styles.css">
+
+    </head>
+
+    <body style="width: 100vw; height: 100vh; background-color: #cccabe;">
+        <div class="chat-container">
+            <div id="chat_display_screen" class="chat-messages">
+                <!-- Messages will be added here via JS -->
+            </div>
+
+            <div class="chat-input">
+                <input id="chat_input_bar" type="text" placeholder="Type your message...">
+                <button id="send_message_button">Send</button>
+            </div>
+        </div>
+        <script type="module" src="./dist/chat.js"></script>
+    </body>
+</html>
