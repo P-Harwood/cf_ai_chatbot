@@ -1,5 +1,5 @@
 name = "cf_ai_chatbot"
-main = "worker/src/worker.ts"
+main = "Worker/src/Worker.ts"
 compatibility_date = "2025-11-12"
 
 [assets]
