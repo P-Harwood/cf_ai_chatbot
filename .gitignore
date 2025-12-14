@@ -1,4 +1,4 @@
 node_modules/
-
+Worker/src/worker.ts
 .DS_Store
 *.log
