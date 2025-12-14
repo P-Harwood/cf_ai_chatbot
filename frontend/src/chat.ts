@@ -6,30 +6,50 @@ const chat_display_screen_id = "chat_display_screen";
 const chat_input_id = "chat_input_bar";
 const send_message_id = "send_message_button";
 
+const enum author{Local, Foreign}
+
 const chat_display_object = create_element_object<HTMLDivElement>(chat_display_screen_id);
 const chat_input_object   = create_element_object<HTMLInputElement>(chat_input_id);
 const send_message_object = create_element_object<HTMLButtonElement>(send_message_id);
 
 function send_Message(): void {
   const inputRes = chat_input_object.return_element();
-  const displayRes = chat_display_object.return_element();
-
-  if (!inputRes.success || !displayRes.success) {
+  if (!inputRes.success){
     return;
   }
-
   const chat_input = inputRes.return_obj;
-  const existing_messages = displayRes.return_obj;
-
   const message = chat_input.value.trim();
-  if (!assertString(message)) return;
-
-  const div = document.createElement("div");
-  div.textContent = message;
-  existing_messages.appendChild(div);
-  existing_messages.scrollTop = existing_messages.scrollHeight;
+  add_message(message, author.Local);
   chat_input.value = "";
 }
+
+function add_message(content: string, sender : author) :Result<boolean> { 
+  // result boolean is a placeholder, incase to be replaced with message details later such as message id
+
+  const displayRes = chat_display_object.return_element();
+
+  if (!displayRes.success) {
+    return {success:false, err_message: "Chat Display element not found"};
+  }
+
+  
+  const existing_messages = displayRes.return_obj;
+
+  
+  if (!assertString(content)) return {success:false, err_message:"Message to send is not detected as a string"};
+
+  const div = document.createElement("div");
+  div.classList.add("Message", sender === author.Local? "Local-Message" : "Foreign-Message");
+  //div.className = sender === author.Local? "Local-Message" : "Foreign-Sender";
+  div.textContent = content;
+  existing_messages.appendChild(div);
+  existing_messages.scrollTop = existing_messages.scrollHeight;
+
+  // return_obj placeholder 
+  return {success:true, return_obj:true};
+}
+
+
 
 function setupChat(): void {
   const chat_display_: Result<HTMLDivElement>  = chat_display_object.update_element();

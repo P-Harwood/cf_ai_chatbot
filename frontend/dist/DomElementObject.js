@@ -1,4 +1,3 @@
-// src/domHandles.ts
 import { log_error } from "./errors.js";
 export function assertElement(element, name) {
     if (element == null) {
