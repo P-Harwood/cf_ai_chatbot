@@ -11,7 +11,17 @@
     </head>
 
     <body style="width: 100vw; height: 100vh; background-color: #cccabe;">
+        
         <div class="chat-container">
+            <div class="user-input">
+                <input id="update_user_input" type="text" placeholder="Enter username">
+                <button id="update_user_button">Update</button>
+                <div>
+                <h2>Current chat:</h2>
+                <h2 id="chat_recipricant">Default</h2>
+                </div>
+
+            </div>
             <div id="chat_display_screen" class="chat-messages">
                 <!-- Messages will be added here via JS -->
             </div>
