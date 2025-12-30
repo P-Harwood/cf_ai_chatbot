@@ -4,3 +4,17 @@ compatibility_date = "2025-11-12"
 
 [assets]
 directory = "./frontend/dist"
+binding = "ASSETS"
+
+[ai]
+binding = "AI"
+remote = true
+
+[[durable_objects.bindings]]
+name = "CHAT"
+class_name = "ChatMessagesDurableObject"
+
+[[migrations]]
+tag = "v3"
+new_sqlite_classes = ["ChatMessagesDurableObject"]
+
