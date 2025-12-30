@@ -1,50 +1,88 @@
-import type { Fetcher, ExportedHandler } from "@cloudflare/workers-types";
+import type { DurableObjectNamespace, Fetcher, Ai, ExportedHandler } from "@cloudflare/workers-types";
 
-interface Env {
-  ASSETS: Fetcher; // from wrangler.toml binding
+export { ChatMessagesDurableObject } from "./ChatMessagesDurableObject";
+
+
+
+type New_Message_Object = { message: string; sessionId: string };
+type Chat_Archive_Request_Object = {from_message: number; sessionId:string};
+
+interface Env { // defined in  wrangler.toml
+  ASSETS: Fetcher;
+  AI : Ai,
+  CHAT : DurableObjectNamespace;
 }
 
-type ChatRequestBody = { message: string };
-type ChatResponseBody = { reply: string };
+function normaliseSessionId(raw: string | null | undefined): string {
+  return (raw ?? "default")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g, "")
+    .slice(0, 40) || "default";
+}
 
-async function handleChatRequest(request: Request): Promise<Response> {
-  let body: ChatRequestBody;
-  try {
-    body = (await request.json()) as ChatRequestBody;
-  } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+function chatStub(env: Env, rawSessionId: string | null | undefined) {
+  const sessionId = normaliseSessionId(rawSessionId);
+  const id = env.CHAT.idFromName(`chat_${sessionId}`);
+  return env.CHAT.get(id);
+}
 
-  const message = body.message?.trim() ?? "";
-  if (!message) {
-    return new Response(JSON.stringify({ error: "Empty message" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+async function readJson<T>(request: Request): Promise<T | null> {
+  try { return (await request.json()) as T; }
+  catch { return null; }
+}
 
-  // Stage 2a: dummy echo
-  const reply: ChatResponseBody["reply"] = `Echo: ${message}`;
 
-  return new Response(JSON.stringify({ reply }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
+
+
+async function newChatMessage(env: Env, request: Request): Promise<Response> {
+
+
+  const body = await readJson<New_Message_Object>(request);
+  if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
+
+  const message = (body.message ?? "").trim();
+  if (!message) return Response.json({ error: "Empty message" }, { status: 400 });
+
+
+  const stub = chatStub(env, body.sessionId);
+
+  return stub.fetch("https://do/newmessage", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ message }),
   });
 }
+
+
+async function chatArchiveRequest(env: Env, request: Request): Promise<Response> {
+  const body = await readJson<Chat_Archive_Request_Object>(request);
+  if (!body) return Response.json({ error: "Invalid JSON" }, { status: 400 });
+
+  const from_message_point = Number(body.from_message ?? 0) || 0;
+
+  const limit = 50;
+
+  const stub = chatStub(env, body.sessionId);
+
+return stub.fetch(
+  `https://do/archive?limit=${limit}&from_message_point=${from_message_point}`,
+  { method: "GET" }
+);
+
+}
+
 
 const worker: ExportedHandler<Env> = {
   async fetch(request : Request, env : Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // Backend route
-    if (url.pathname === "/api/chat" && request.method === "POST") {
-      return handleChatRequest(request);
+    if(url.pathname === "/api/chat" && request.method === "POST") {
+      return newChatMessage(env, request);
+    }else if(url.pathname === "/api/archive" && request.method === "POST"){
+      return chatArchiveRequest(env,request);
     }
 
-    // Everything else → static frontend from ./frontend
     return env.ASSETS.fetch(request);
   },
 };
