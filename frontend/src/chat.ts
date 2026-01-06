@@ -45,6 +45,9 @@ async function send_Message(): Promise<Result<boolean>> {
   }
   const chat_input = inputRes.return_obj;
   const message = chat_input.value.trim();
+  if(message == null || message == "") {return {success:false, err_message:"No text input"}};
+
+  
   add_message(message, author.Local);
   chat_input.value = "";
 
