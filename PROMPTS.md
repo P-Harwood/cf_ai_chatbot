@@ -1,0 +1,14 @@
+-outline what this cloudflare ai assignment actually wants and if there any considerations for this project which are not immediately visible which is worth noting.(I put the problem details here after this message)
+-teach me what workers are vs a normal server, simple
+-Show me up to date cloudflare docs i should be using for workers and other cloudflare services which will relate to this project
+-give me a simple html chat layout: big message div, textbox, send button
+-generate me a tiny .ico for an ai chatbot website
+-Generate me a template worker function, do not attempt to solve the issue, just a generic worker script template
+-my repo is frontend/ + Worker/  whats a file structure so i can add ai and storage components later cleanly and explain your reasoning (With trade offs)
+-should main in wrangler.toml be ts or compiled js
+-browser error: loading /dist/chat.js blocked, mime type is text/html. Advise on this error
+-explain durable objects simply what persists, what is a session, how and what memory persists and for how long
+-i want multiple chats, do I store multiple conversations on one DO?
+-Cloudflare website shows requests but i cant see any data/tables. Is it possible to see the databases?
+-deploy fails saying free plan needs new_sqlite_classes migration, what does this error mean, does it cost to store data with durable objects?
+-give me a checklist of requirements for this project
