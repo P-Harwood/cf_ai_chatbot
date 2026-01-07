@@ -1,36 +1,40 @@
 <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChatBot</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<html>
-    <head>
-        <title>
-            ChatBot
-        </title>
+  <body>
+    <main class="app">
+      <div class="chat-container">
+        <header class="chat-header">
+          <div class="user-controls">
+            <label class="sr-only" for="update_user_input">Username</label>
+            <input id="update_user_input" type="text" placeholder="Enter username" />
+            <button id="update_user_button" type="button">Update</button>
+          </div>
 
-        <link rel="stylesheet" href = "styles.css">
+          <div class="chat-meta">
+            <div class="meta-label">Current chat</div>
+            <div id="chat_recipricant" class="meta-value">Default</div>
+          </div>
+        </header>
 
-    </head>
+        <section id="chat_display_screen" class="chat-messages" aria-live="polite">
+          <!-- Messages will be added here via JS -->
+        </section>
 
-    <body style="width: 100vw; height: 100vh; background-color: #cccabe;">
-        
-        <div class="chat-container">
-            <div class="user-input">
-                <input id="update_user_input" type="text" placeholder="Enter username">
-                <button id="update_user_button">Update</button>
-                <div>
-                <h2>Current chat:</h2>
-                <h2 id="chat_recipricant">Default</h2>
-                </div>
+        <footer class="chat-input">
+          <label class="sr-only" for="chat_input_bar">Message</label>
+          <input id="chat_input_bar" type="text" placeholder="Type your message..." />
+          <button id="send_message_button" type="button">Send</button>
+        </footer>
+      </div>
+    </main>
 
-            </div>
-            <div id="chat_display_screen" class="chat-messages">
-                <!-- Messages will be added here via JS -->
-            </div>
-
-            <div class="chat-input">
-                <input id="chat_input_bar" type="text" placeholder="Type your message...">
-                <button id="send_message_button">Send</button>
-            </div>
-        </div>
-        <script type="module" src="./chat.js"></script>
-    </body>
+    <script type="module" src="./chat.js"></script>
+  </body>
 </html>
