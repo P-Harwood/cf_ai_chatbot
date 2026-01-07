@@ -1,8 +1,10 @@
 import type { Result } from "./result.js";
-
 import { assertString } from "./errors.js";
 import { create_element_object } from "./DomElementObject.js";
 import { chat_archive, server_call_message } from "./server_call.js";
+
+
+
 
 export type New_Chat_Object = { message: string; sessionId: string };
 type Chat_Archive_Request_Object = {from_message: number; sessionId:string};
@@ -16,26 +18,26 @@ export type ArchiveRow = {
 };
 
 
+const enum author{Local, Foreign}
+
 const chat_display_screen_id = "chat_display_screen";
 const chat_input_id = "chat_input_bar";
 const send_message_id = "send_message_button";
-
 const update_user_button_id = "update_user_button";
 const update_user_input_id = "update_user_input";
 const chat_session_id = "chat_recipricant";
 
 
-const enum author{Local, Foreign}
+
+let chat_id : string = "Default";
 
 const chat_display_object = create_element_object<HTMLDivElement>(chat_display_screen_id);
 const chat_input_object   = create_element_object<HTMLInputElement>(chat_input_id);
 const send_message_object = create_element_object<HTMLButtonElement>(send_message_id);
-
 const update_user_input_object   = create_element_object<HTMLInputElement>(update_user_input_id);
 const update_user_button_object = create_element_object<HTMLButtonElement>(update_user_button_id);
 const chat_id_text_object = create_element_object<HTMLHeadingElement>(chat_session_id);
 
-let chat_id : string = "Default";
 
 
 async function send_Message(): Promise<Result<boolean>> {
@@ -119,9 +121,10 @@ async function get_Message_Archive():Promise<void>{
 
     console.log("rows:", archive.rows);
 
-    for (const row of archive.rows) {
+    for (const row of [...archive.rows].reverse()) {
       add_message(row.content, row.role === "user" ? author.Local : author.Foreign);
     }
+
   } catch (err) {
     console.error("archive fetch failed:", err);
     }
